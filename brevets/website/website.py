@@ -10,34 +10,40 @@ def home():
 
 @app.route('/listAll',  methods = ["POST"])
 def listAll():
+    # getting format and k values out
     format = request.form.get("format")
     k = request.form.get("k")
     
     # app.logger.debug(format); 
     # app.logger.debug(k); 
 
+    # formatting and sending a request to the api.py using requests
     r = requests.get('http://restapi:5000/listAll' + "/" + format + "?top=" + k)
     return r.text
 
 @app.route("/listOpenOnly",  methods = ["POST"])
 def listOpenOnly():
+    # getting format and k values out
     format = request.form.get("format")
     k = request.form.get("k")
 
     # app.logger.debug(format); 
     # app.logger.debug(k);
 
+    # formatting and sending a request to the api.py using requests
     r = requests.get('http://restapi:5000/listOpenOnly' + "/" + format + "?top=" + k)
     return r.text
 
 @app.route("/listCloseOnly",  methods = ["POST"])
 def listCloseOnly():
+    # getting format and k values out
     format = request.form.get("format")
     k = request.form.get("k")
 
     # app.logger.debug(format); 
     # app.logger.debug(k);
 
+    # formatting and sending a request to the api.py using requests
     r = requests.get('http://restapi:5000/listCloseOnly' + "/" + format + "?top=" + k)    
     return r.text
 

@@ -20,16 +20,18 @@ db = client.database
 class listAll(Resource):
     def get(self, format):
         app.logger.debug("ENTERED listAll in API")
-        app.logger.debug(format)  
-
+        app.logger.debug(format)  # checking format
+        
+        # pulling out the k value and checking it
         k = request.args.get('top', default = 0, type=int)
         app.logger.debug(k)
 
-
+        # pulling out unnecessary items from the list and clearning the list    
         data = list(db.database.find({}, {'_id': 0, 'BrevetDistance':0, 'StartTime':0, 'Location': 0, 'Km':0, 'Miles':0}))
         data.remove({})
         # app.logger.debug("DATA FROM MONGODB", data)
         
+        # depending on the selected output format, sending the resulting list to the appropriate support function
         if format == "Json":
             return toJson(k, data)
         elif format == "CSV":    
@@ -41,15 +43,18 @@ class listAll(Resource):
 class listOpenOnly(Resource):
     def get(self, format):
         app.logger.debug("ENTERED listOpenOnly in API")  
-        app.logger.debug(format)  
+        app.logger.debug(format) # checking format 
         
+        # pulling out the k value and checking it
         k = request.args.get('top', default = 0, type=int)
         app.logger.debug(k)
 
+        # pulling out unnecessary items from the list and clearning the list  
         data = list(db.database.find({}, {'_id': 0, 'BrevetDistance':0, 'StartTime':0, 'Location': 0, 'Km':0, 'Miles':0, 'Close':0}))
         data.remove({})
         # app.logger.debug("DATA FROM MONGODB", data)
 
+        # depending on the selected output format, sending the resulting list to the appropriate support function
         if format == "Json":
             return toJson(k, data)
         elif format == "CSV":    
@@ -61,15 +66,18 @@ class listOpenOnly(Resource):
 class listCloseOnly(Resource):
     def get(self, format):
         app.logger.debug("ENTERED listCloseOnly in API") 
-        app.logger.debug(format)     
+        app.logger.debug(format) # checking format    
 
+        # pulling out the k value and checking it
         k = request.args.get('top', default = 0, type=int)
         app.logger.debug(k)
 
+        # pulling out unnecessary items from the list and clearning the list  
         data = list(db.database.find({}, {'_id': 0, 'BrevetDistance':0, 'StartTime':0, 'Location': 0, 'Km':0, 'Miles':0, 'Open':0}))
         data.remove({})
         # app.logger.debug("DATA FROM MONGODB", data)
 
+        # depending on the selected output format, sending the resulting list to the appropriate support function
         if format == "Json":
             return toJson(k, data)
         elif format == "CSV":    
@@ -77,35 +85,42 @@ class listCloseOnly(Resource):
         else:
             return "ERROR" 
 
+# support function for converting to JSON format
 def toJson(k, data):
+    # create a new list
     newlist = []
+    # if we have a k value and its less than the total number of rows
+    # loop through data and append each row from data to the list
+    # then jsonify the list and return it
     if k > 0 and k <= len(data):
         for i in range(0, k):
             newlist.append(dict(data[i]))
             app.logger.debug("LIST", newlist)
         return jsonify(newlist)
     
+    # otherwise just jsonify the original list and return that
     else:
         return jsonify(data)
 
-
+# support function for converting to CSV format
 def toCSV(k, data):
+    # create a new list
     newlist = [] 
-    # app.logger.debug("DATA DATA DATA",data)
-
+    # if we have a k value and its less than the total number of rows
+    # loop through data and append each row from data to the list
+    # then turn that list into a dataframe, convert to CSV using to_csv and return
     if k > 0 and k <= len(data):
         for i in range(0, k):
             newlist.append(dict(data[i]))
             app.logger.debug("LIST", newlist)
         df = pd.DataFrame(newlist)
-        app.logger.debug("DATAFRAME", df)
-        
+               
         return df.to_csv(index=False)
 
+    # otherwise just convert the original list to dataframe, then to CSV and return
     else:
         df = pd.DataFrame(data)
-        # app.logger.debug("DATAFRAME", df)
-
+        
         return df.to_csv(index=False)
 
 
