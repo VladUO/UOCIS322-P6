@@ -19,6 +19,6 @@ Inside the list functions the data is pulled from the database and the unnecessa
 
 The website.py function simply sends out the data in whatever format through a return statement. In my program that data is then output on the submit page. 
 
-
+Once thing to note: I used python pandas to convert the list into a dataframe and then from that into CSV format. It seems to be formatted correctly but the output looks a little strange without a csv reader. I was not sure if we are supposed to implement anything like that but I ran out of time and decided to leave it as is. 
 
      
