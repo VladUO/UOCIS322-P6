@@ -16,32 +16,37 @@ api = Api(app)
 client = MongoClient('mongodb://' + os.environ['MONGODB_HOSTNAME'], 27017)
 db = client.database
 
+format = "json"
+
 # class for listing all times
 class listAll(Resource):
-    def get(self, format):
+    def get(self, format="json"):
         app.logger.debug("ENTERED listAll in API")
         app.logger.debug(format)  # checking format
-        
+
+        if format == None:
+            format = "json"
+
         # pulling out the k value and checking it
         k = request.args.get('top', default = 0, type=int)
         app.logger.debug(k)
 
-        # pulling out unnecessary items from the list and clearning the list    
+        # pulling out unnecessary items from the list and cleaning the list    
         data = list(db.database.find({}, {'_id': 0, 'BrevetDistance':0, 'StartTime':0, 'Location': 0, 'Km':0, 'Miles':0}))
         data.remove({})
         # app.logger.debug("DATA FROM MONGODB", data)
         
         # depending on the selected output format, sending the resulting list to the appropriate support function
-        if format == "Json":
+        if format == "json":
             return toJson(k, data)
-        elif format == "CSV":    
+        elif format == "csv":    
             return toCSV(k, data)
         else:
             return "ERROR"     
 
 # class for listing open times only
 class listOpenOnly(Resource):
-    def get(self, format):
+    def get(self, format="json"):
         app.logger.debug("ENTERED listOpenOnly in API")  
         app.logger.debug(format) # checking format 
         
@@ -49,22 +54,22 @@ class listOpenOnly(Resource):
         k = request.args.get('top', default = 0, type=int)
         app.logger.debug(k)
 
-        # pulling out unnecessary items from the list and clearning the list  
+        # pulling out unnecessary items from the list and cleaning the list  
         data = list(db.database.find({}, {'_id': 0, 'BrevetDistance':0, 'StartTime':0, 'Location': 0, 'Km':0, 'Miles':0, 'Close':0}))
         data.remove({})
         # app.logger.debug("DATA FROM MONGODB", data)
 
         # depending on the selected output format, sending the resulting list to the appropriate support function
-        if format == "Json":
+        if format == "json":
             return toJson(k, data)
-        elif format == "CSV":    
+        elif format == "csv":    
             return toCSV(k, data)
         else:
             return "ERROR" 
 
 # class for listing close times only
 class listCloseOnly(Resource):
-    def get(self, format):
+    def get(self, format="json"):
         app.logger.debug("ENTERED listCloseOnly in API") 
         app.logger.debug(format) # checking format    
 
@@ -78,9 +83,9 @@ class listCloseOnly(Resource):
         # app.logger.debug("DATA FROM MONGODB", data)
 
         # depending on the selected output format, sending the resulting list to the appropriate support function
-        if format == "Json":
+        if format == "json":
             return toJson(k, data)
-        elif format == "CSV":    
+        elif format == "csv":    
             return toCSV(k, data)
         else:
             return "ERROR" 
@@ -126,9 +131,9 @@ def toCSV(k, data):
 
 # # Create routes
 # # Another way, without decorators
-api.add_resource(listAll, '/listAll/<string:format>')
-api.add_resource(listOpenOnly, '/listOpenOnly/<string:format>')
-api.add_resource(listCloseOnly, '/listCloseOnly/<string:format>')
+api.add_resource(listAll, '/listAll', '/listAll/<string:format>')
+api.add_resource(listOpenOnly, '/listOpenOnly', '/listOpenOnly/<string:format>')
+api.add_resource(listCloseOnly, '/listCloseOnly', '/listCloseOnly/<string:format>')
 
 # Run the application
 if __name__ == '__main__':

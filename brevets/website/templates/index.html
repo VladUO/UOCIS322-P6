@@ -45,8 +45,8 @@
                <div class="col-md-4">
                   <label>Format</label>
                   <select name="format" id="format">
-                     <option value="Json">Json</option>
-                     <option value="CSV">CSV</option>
+                     <option value="json">json</option>
+                     <option value="csv">csv</option>
                   </select>
                </div>   
 
@@ -81,13 +81,13 @@
                      e.preventDefault();
 
                      var data =  $("#data").val();;        //pulling out which data we want
-                     console.log("Data: ", data)                                 //making sure it is correct      
+                     console.log("Data: ", data)           //making sure it is correct      
 
                      var format =  $("#format").val();;    //pulling out the format of the data
-                     console.log("Format: ", format);                            //making sure its correct
+                     console.log("Format: ", format);      //making sure its correct
              
-                     var k =  $("#k").val();;                                      //pulling the k value
-                     console.log("K value:", k);                                 //making sure it is correct   
+                     var k =  $("#k").val();;              //pulling the k value
+                     console.log("K value:", k);           //making sure it is correct   
                      
                      //sending a post request to flask_brevets for all data 
                      if (data == "All")
